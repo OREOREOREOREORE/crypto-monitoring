@@ -1,0 +1,77 @@
+{
+  "account_name": "CaseStudy_Portfolio",
+  "positions": [
+    {
+      "asset": "USDT",
+      "symbol": "USDT",
+      "instrument": "SPOT",
+      "side": "LONG",
+      "quantity": 50000.0,
+      "entry_price_usdt": 1.0
+    },
+    {
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "instrument": "SPOT",
+      "side": "LONG",
+      "quantity": 1.25,
+      "entry_price_usdt": 70000.0
+    },
+    {
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "instrument": "PERP",
+      "side": "SHORT",
+      "quantity": 1.25,
+      "entry_price_usdt": 70000.0
+    },
+    {
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "instrument": "SPOT",
+      "side": "LONG",
+      "quantity": 22.5,
+      "entry_price_usdt": 2200.0
+    },
+    {
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "instrument": "PERP",
+      "side": "SHORT",
+      "quantity": 22.5,
+      "entry_price_usdt": 2200.0
+    },
+    {
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "instrument": "SPOT",
+      "side": "LONG",
+      "quantity": 265.0,
+      "entry_price_usdt": 100.0
+    },
+    {
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "instrument": "PERP",
+      "side": "SHORT",
+      "quantity": 265.0,
+      "entry_price_usdt": 100.0
+    },
+    {
+      "asset": "HYPE",
+      "symbol": "HYPEUSDT",
+      "instrument": "SPOT",
+      "side": "LONG",
+      "quantity": 244.71,
+      "entry_price_usdt": 88.0
+    },
+    {
+      "asset": "HYPE",
+      "symbol": "HYPEUSDT",
+      "instrument": "PERP",
+      "side": "SHORT",
+      "quantity": 244.71,
+      "entry_price_usdt": 88.0
+    }
+  ]
+}
