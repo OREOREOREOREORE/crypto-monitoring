@@ -6,12 +6,12 @@ import { PositionsTable } from "./components/PositionsTable";
 import { useDashboard } from "./hooks/useDashboard";
 import { useDashboardLayout } from "./hooks/useDashboardLayout";
 import { useEquityHistory } from "./hooks/useEquityHistory";
-import { useNow } from "./hooks/useNow";
+import { useRefreshInterval } from "./hooks/useRefreshInterval";
 import { formatUpdatedAt } from "./lib/format";
 
 export default function App() {
-  const { data, error, loading, refresh } = useDashboard();
-  const now = useNow();
+  const { interval, setRefreshInterval, options: refreshOptions } = useRefreshInterval();
+  const { data, error, loading, refresh } = useDashboard(interval);
   const equityPoints = useEquityHistory(data);
   const { layout, onLayoutChange, resetLayout } = useDashboardLayout();
 
@@ -19,14 +19,24 @@ export default function App() {
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-[1700px] px-4 py-6">
         <header className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-xl font-semibold">Funding Arbitrage Monitor</h1>
           <div className="flex flex-wrap items-center gap-3 text-sm text-zinc-400">
+            <label className="flex items-center gap-2">
+              <span>Refresh</span>
+              <select
+                value={interval}
+                onChange={(e) => setRefreshInterval(Number(e.target.value))}
+                className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-1 text-xs text-zinc-200"
+              >
+                {refreshOptions.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <span>
               Last updated{" "}
               <span className="font-mono text-zinc-200">{formatUpdatedAt(data?.updated_at)}</span>
-            </span>
-            <span className="rounded-full border border-zinc-800 px-2 py-0.5 text-xs text-zinc-500">
-              refreshes every 60s
             </span>
             <button
               type="button"
@@ -65,7 +75,7 @@ export default function App() {
               }
               exposure={<ExposurePies pairs={data.pairs} />}
               funding={<FundingApr pairs={data.pairs} />}
-              positions={<PositionsTable positions={data.positions} now={now} />}
+              positions={<PositionsTable positions={data.positions} />}
             />
           )
         )}

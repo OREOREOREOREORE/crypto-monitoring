@@ -6,8 +6,8 @@ const STORAGE_KEY = "dashboard-layout-v1";
 const DEFAULT_LAYOUT: Layout = [
   { i: "equity", x: 0, y: 0, w: 12, h: 16, minW: 6, minH: 8 },
   { i: "exposure", x: 0, y: 16, w: 12, h: 11, minW: 6, minH: 6 },
-  { i: "funding", x: 0, y: 27, w: 12, h: 4, minW: 4, minH: 4 },
-  { i: "positions", x: 0, y: 31, w: 12, h: 14, minW: 6, minH: 6 },
+  { i: "funding", x: 0, y: 27, w: 12, h: 2, minW: 4, minH: 1 },
+  { i: "positions", x: 0, y: 31, w: 12, h: 6, minW: 6, minH: 6 },
 ];
 
 function loadLayout(): Layout {

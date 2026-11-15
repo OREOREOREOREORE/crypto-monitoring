@@ -1,10 +1,10 @@
 import type { PositionView } from "../types/dashboard";
 import { Widget } from "./Widget";
+import { useNow } from "../hooks/useNow";
 import { formatCountdown, formatNumber, formatPercent, formatUsd, pnlClass } from "../lib/format";
 
 interface Props {
   positions: PositionView[];
-  now: number;
 }
 
 function sideBadge(side: string): string {
@@ -17,7 +17,9 @@ function instrumentBadge(instrument: string): string {
     : "bg-violet-500/15 text-violet-300";
 }
 
-export function PositionsTable({ positions, now }: Props) {
+export function PositionsTable({ positions }: Props) {
+  const now = useNow();
+
   return (
     <Widget title="Positions">
       <div className="h-full overflow-auto">

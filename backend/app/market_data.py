@@ -1,4 +1,4 @@
-"""Async Bybit market-data client with a periodic in-memory cache."""
+"""Async Bybit market-data client with on-demand, min-interval refresh."""
 
 from __future__ import annotations
 
@@ -17,22 +17,36 @@ LINEAR_TICKERS_URL = f"{BYBIT_BASE}/v5/market/tickers?category=linear"
 logger = logging.getLogger(__name__)
 
 
-def _to_float(value) -> float | None:
+def _to_float(value: object) -> float | None:
     try:
-        return float(value)
+        return float(value)  # type: ignore[arg-type]
     except (TypeError, ValueError):
         return None
 
 
+def _result_list(resp: httpx.Response) -> list[dict]:
+    payload = resp.json()
+    if payload.get("retCode") != 0:
+        raise RuntimeError(f"Bybit error {payload.get('retCode')}: {payload.get('retMsg')}")
+    return payload["result"]["list"]
+
+
 class MarketData:
-    """Caches Bybit spot prices and perp tickers, refreshed every minute."""
+    """Caches Bybit tickers; refreshes on demand at most once per `refresh_interval` seconds."""
 
     def __init__(self, refresh_interval: float = 60.0) -> None:
         self.spot_prices: dict[str, float] = {}
         self.perp_data: dict[str, PerpTicker] = {}
         self.updated_at: str | None = None
         self.refresh_interval = refresh_interval
-        self._task: asyncio.Task | None = None
+        self._lock = asyncio.Lock()
+        self._last_refresh: datetime | None = None
+
+    def _is_stale(self) -> bool:
+        if self._last_refresh is None:
+            return True
+        elapsed = (datetime.now(timezone.utc) - self._last_refresh).total_seconds()
+        return elapsed >= self.refresh_interval
 
     async def refresh(self) -> None:
         async with httpx.AsyncClient(timeout=10.0) as client:
@@ -43,8 +57,8 @@ class MarketData:
         spot_resp.raise_for_status()
         linear_resp.raise_for_status()
 
-        spot_list = spot_resp.json()["result"]["list"]
-        linear_list = linear_resp.json()["result"]["list"]
+        spot_list = _result_list(spot_resp)
+        linear_list = _result_list(linear_resp)
 
         # Some tickers carry empty strings for price/funding fields; skip them.
         spot_prices: dict[str, float] = {}
@@ -69,27 +83,17 @@ class MarketData:
 
         self.spot_prices = spot_prices
         self.perp_data = perp_data
-        self.updated_at = datetime.now(timezone.utc).isoformat()
+        self._last_refresh = datetime.now(timezone.utc)
+        self.updated_at = self._last_refresh.isoformat()
 
-    async def start(self) -> None:
-        try:
-            await self.refresh()
-        except Exception as exc:  # serve empty data on startup failure; keep polling
-            logger.warning("Initial market data refresh failed: %s", exc)
-        self._task = asyncio.create_task(self._run())
-
-    async def _run(self) -> None:
-        while True:
-            await asyncio.sleep(self.refresh_interval)
+    async def ensure_fresh(self) -> None:
+        if not self._is_stale():
+            return
+        async with self._lock:
+            if not self._is_stale():
+                return
             try:
                 await self.refresh()
-            except Exception as exc:  # keep serving last good data on failure
+            except Exception as exc:
                 logger.warning("Market data refresh failed: %s", exc)
-
-    async def stop(self) -> None:
-        if self._task is not None:
-            self._task.cancel()
-            try:
-                await self._task
-            except asyncio.CancelledError:
-                pass
+                self._last_refresh = datetime.now(timezone.utc)  # throttle retries

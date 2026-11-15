@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { DashboardResponse } from "../types/dashboard";
 
-const POLL_INTERVAL_MS = 60_000;
-
 interface DashboardState {
   data: DashboardResponse | null;
   error: string | null;
@@ -10,7 +8,7 @@ interface DashboardState {
   refresh: () => Promise<void>;
 }
 
-export function useDashboard(): DashboardState {
+export function useDashboard(intervalMs: number): DashboardState {
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,9 +30,9 @@ export function useDashboard(): DashboardState {
     // synchronously, so the lint heuristic is a false positive.
     // oxlint-disable-next-line react/set-state-in-effect
     void refresh();
-    const id = setInterval(() => void refresh(), POLL_INTERVAL_MS);
+    const id = setInterval(() => void refresh(), intervalMs);
     return () => clearInterval(id);
-  }, [refresh]);
+  }, [refresh, intervalMs]);
 
   return { data, error, loading: data === null && error === null, refresh };
 }
