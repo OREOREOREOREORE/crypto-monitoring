@@ -2,8 +2,7 @@
 
 A real-time web dashboard that monitors a delta-neutral funding-rate arbitrage portfolio.
 
-Built as a take-home case study (see `Student Developer - Case Study.pdf`): it loads a mock
-portfolio (4 long spot positions hedged by 4 short perpetual positions), pulls live market data
+it loads a mock portfolio (4 long spot positions hedged by 4 short perpetual positions), pulls live market data
 from the Bybit public API, computes metrics, and refreshes every minute.
 
 ## Features
@@ -52,14 +51,14 @@ Open <http://localhost:5173>. The Vite dev server proxies `/api/*` to the backen
 
 ## How it works
 
-The backend polls Bybit's spot and linear ticker endpoints every 60 seconds and caches the
-result. `GET /api/dashboard` computes the derived metrics from the cached prices and the starting
-portfolio (`backend/app/portfolio.json`) and returns them as JSON. The frontend polls that
-endpoint every 60 seconds and renders the dashboard; the funding countdown ticks locally every
-second.
+The backend refreshes Bybit's spot and linear ticker endpoints on demand, at most once per
+refresh interval (default 60s; override with the `REFRESH_INTERVAL_SECONDS` env var). `GET
+/api/dashboard` computes the derived metrics from the cached prices and the starting portfolio
+(`backend/app/portfolio.json`) and returns them as JSON. The frontend polls that endpoint on an
+adjustable interval (15s/30s/1m via the **Refresh** selector in the header) and renders the
+dashboard; the funding countdown ticks locally every second.
 
-Calculation logic lives in `backend/app/calculations.py` (pure and unit-tested). The sign
-convention and formulas are documented in `PLAN.md`, and the domain vocabulary in `CONTEXT.md`.
+Calculation logic lives in `backend/app/calculations.py` (pure and unit-tested).
 
 ## Tests
 
