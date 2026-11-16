@@ -97,6 +97,7 @@ def test_compute_dashboard_delta_neutral() -> None:
     assert result.summary.net_delta_ratio == pytest.approx(0.0)
     assert result.pairs[0].net_exposure == pytest.approx(0.0)
     assert result.pairs[0].funding_apr == pytest.approx(0.0001 * 3 * 365)
+    assert result.pairs[0].funding_apy == pytest.approx((1 + 0.0001) ** (3 * 365) - 1)
 
 
 def test_positions_sorted_spot_before_perp_and_usdt_last() -> None:

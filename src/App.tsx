@@ -1,7 +1,7 @@
 import { DashboardGrid } from "./components/DashboardGrid";
 import { EquityChart } from "./components/EquityChart";
 import { ExposurePies } from "./components/ExposurePies";
-import { FundingApr } from "./components/FundingApr";
+import { FundingYield } from "./components/FundingYield";
 import { PositionsTable } from "./components/PositionsTable";
 import { useDashboard } from "./hooks/useDashboard";
 import { useDashboardLayout } from "./hooks/useDashboardLayout";
@@ -74,7 +74,7 @@ export default function App() {
                 <EquityChart points={equityPoints} summary={data.summary} pairs={data.pairs} />
               }
               exposure={<ExposurePies pairs={data.pairs} />}
-              funding={<FundingApr pairs={data.pairs} />}
+              funding={<FundingYield pairs={data.pairs} />}
               positions={<PositionsTable positions={data.positions} />}
             />
           )

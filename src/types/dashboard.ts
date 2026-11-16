@@ -30,6 +30,7 @@ export interface PairView {
   perp_notional: number | null;
   net_exposure: number | null;
   funding_apr: number | null;
+  funding_apy: number | null;
 }
 
 export interface DashboardResponse {

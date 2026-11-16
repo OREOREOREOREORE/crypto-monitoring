@@ -67,6 +67,7 @@ class PairView(BaseModel):
     perp_notional: float | None = None
     net_exposure: float | None = None
     funding_apr: float | None = None
+    funding_apy: float | None = None
 
 
 class DashboardResponse(BaseModel):

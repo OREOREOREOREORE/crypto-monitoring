@@ -65,6 +65,11 @@ def funding_apr(funding_rate: float) -> float:
     return funding_rate * FUNDING_PAYMENTS_PER_DAY * 365
 
 
+def funding_apy(funding_rate: float) -> float:
+    # Compounded yield over FUNDING_PAYMENTS_PER_DAY * 365 funding periods.
+    return (1 + funding_rate) ** (FUNDING_PAYMENTS_PER_DAY * 365) - 1
+
+
 def _sort_key(pos: Position) -> tuple[int, bool]:
     return (ASSET_ORDER.get(pos.asset, 99), pos.instrument == Instrument.PERP)
 
@@ -140,10 +145,12 @@ def _pair_view(
     )
 
     apr = None
+    apy = None
     if perp is not None:
         ticker = perp_data.get(perp.symbol)
         if ticker is not None:
             apr = funding_apr(ticker.funding_rate)
+            apy = funding_apy(ticker.funding_rate)
 
     return PairView(
         asset=asset,
@@ -151,6 +158,7 @@ def _pair_view(
         perp_notional=perp_notional,
         net_exposure=net_exposure,
         funding_apr=apr,
+        funding_apy=apy,
     )
 
 
