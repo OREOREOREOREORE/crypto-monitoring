@@ -7,7 +7,7 @@ market data from the Bybit public API, computes metrics, and refreshes on an adj
 
 ## Features
 
-### Core (case-study requirements)
+### Core
 
 - **Summary metrics** — Total Account Equity, Total Unrealised PnL, Total Expected Next Funding,
   and Net Delta Exposure (as % of equity), shown in the equity chart header.
@@ -17,17 +17,14 @@ market data from the Bybit public API, computes metrics, and refreshes on an adj
   Unrealised PnL, Funding Rate, a `HH:MM:SS` countdown to next funding, and Expected Funding.
 - **Live equity chart** — TradingView area/line chart of total account equity over time, with a
   PnL-per-minute histogram pane and a dashed break-even (starting balance) line.
+  - **Chart customization** — SMA overlay, cumulative-PnL baseline view, session high/low lines and
+    markers, grid / price-axis / last-value / trailing-line toggles, crosshair mode, and up/down
+    "live tick" markers.
 
 ### Extra features
 
 - **Funding Yield** — per-pair annualized funding **APR** and compounded **APY** as diverging
   green/red bars with a weighted average.
-- **Draggable dashboard** — drag to reorder and resize every panel; the layout persists and can be
-  reset from the header.
-- **Chart customization** — SMA overlay, cumulative-PnL baseline view, session high/low lines and
-  markers, grid / price-axis / last-value / trailing-line toggles, crosshair mode, and up/down
-  "live tick" markers.
-- **Adjustable refresh** — a header selector (15s / 30s / 1m)
 
 ## Tech stack
 
